@@ -5,8 +5,7 @@ import { UserListComponent } from './user-list.component';
 const routes: Routes = [{ path: '', component: UserListComponent }];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+	imports: [RouterModule.forChild(routes)],
+	exports: [RouterModule],
 })
-export class UserListRoutingModule {
-}
+export class UserListRoutingModule {}

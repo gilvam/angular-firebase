@@ -1,1 +1,14 @@
-<p>user-edit works!</p>
+<form [formGroup]="form" (submit)="submit()">
+	<mat-form-field>
+		<mat-label>Nome</mat-label>
+		<input formControlName="name" matInput />
+		<mat-hint>Hint</mat-hint>
+	</mat-form-field>
+	<mat-form-field>
+		<mat-label>email</mat-label>
+		<input formControlName="email" matInput />
+		<mat-hint>email</mat-hint>
+	</mat-form-field>
+
+	<button mat-raised-button color="primary" type="submit">enviar</button>
+</form>

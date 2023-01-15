@@ -5,7 +5,7 @@ import { UserListRoutingModule } from './user-list-routing.module';
 import { UserListComponent } from './user-list.component';
 
 @NgModule({
-  imports: [CommonModule, UserListRoutingModule],
-  declarations: [UserListComponent],
+	imports: [CommonModule, UserListRoutingModule],
+	declarations: [UserListComponent],
 })
 export class UserListModule {}
