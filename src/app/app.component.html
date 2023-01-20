@@ -1,1 +1,62 @@
-<router-outlet></router-outlet>
+<mat-toolbar class="navbar" color="primary">
+	<button mat-icon-button (click)="sideNavToggle()">
+		<mat-icon>menu</mat-icon>
+	</button>
+
+	<a class="navbar-brand" [routerLink]="['/']" matTooltip="Home">
+		<p>Angular Firebase</p>
+	</a>
+
+	<span class="navbar-spacer"></span>
+
+	<button mat-icon-button [matMenuTriggerFor]="notificationMenu">
+		<mat-icon matBadge="2" matBadgeColor="accent">notifications</mat-icon>
+	</button>
+	<mat-menu #notificationMenu="matMenu" xPosition="before" yPosition="above" [overlapTrigger]="false">
+		<a mat-menu-item>
+			<span>You have new tasks</span>
+		</a>
+		<a mat-menu-item>
+			<span>You have a new message</span>
+		</a>
+	</mat-menu>
+
+	<button mat-button [matMenuTriggerFor]="userMenu">
+		<mat-icon>person</mat-icon>
+		<span> Geraldo da Silva </span>
+	</button>
+	<mat-menu #userMenu="matMenu" [overlapTrigger]="false">
+		<a mat-menu-item [routerLink]="['/account/profile']">
+			<mat-icon>person</mat-icon>
+			<span>Account</span>
+		</a>
+
+		<a mat-menu-item [routerLink]="['/auth/login']">
+			<mat-icon>exit_to_app</mat-icon>
+			<span>Log out</span>
+		</a>
+	</mat-menu>
+</mat-toolbar>
+
+<mat-sidenav-container>
+	<mat-sidenav [opened]="navOpen" [mode]="navMode" [fixedInViewport]="isMobile" fixedTopGap="56">
+		<mat-nav-list (click)="sideNavToggleMobile()">
+			<a mat-list-item [routerLink]="['/users']" routerLinkActive="active">
+				<mat-icon matListItemIcon>group</mat-icon>
+				users
+			</a>
+			<a mat-list-item [routerLink]="['/users/list']">
+				<mat-icon matListItemIcon>group</mat-icon>
+				users list
+			</a>
+			<a id="push-bottom" mat-list-item [routerLink]="['/about']">
+				<mat-icon matListItemIcon> info_outline</mat-icon>
+				About
+			</a>
+		</mat-nav-list>
+	</mat-sidenav>
+
+	<mat-sidenav-content class="sidenav-content">
+		<router-outlet></router-outlet>
+	</mat-sidenav-content>
+</mat-sidenav-container>

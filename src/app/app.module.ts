@@ -8,6 +8,15 @@ import { environment } from '../environments/environment';
 import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatListModule } from '@angular/material/list';
+import { MatLineModule } from '@angular/material/core';
+import { MatBadgeModule } from '@angular/material/badge';
 
 @NgModule({
 	declarations: [AppComponent],
@@ -17,6 +26,15 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 		AngularFireModule.initializeApp(environment.firebase),
 		AngularFireDatabaseModule,
 		BrowserAnimationsModule,
+		MatToolbarModule,
+		MatIconModule,
+		MatMenuModule,
+		MatButtonModule,
+		MatTooltipModule,
+		MatSidenavModule,
+		MatListModule,
+		MatLineModule,
+		MatBadgeModule,
 	],
 	providers: [
 		{
