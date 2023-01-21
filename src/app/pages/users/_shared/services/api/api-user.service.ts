@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { User } from '../../model/user.model';
 import { AngularFireDatabase } from '@angular/fire/compat/database';
-import { map } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { IUser } from '../../model/user.interface';
 import { UserDto } from '../../model/user-dto.model';
 import { UserDbEnum } from '../../model/user-db.enum';
@@ -11,16 +11,17 @@ import { Action } from '@angular/fire/compat/database/interfaces';
 export class ApiUserService {
 	constructor(private db: AngularFireDatabase) {}
 
-	insert(user: User): void {
+	insert(user: IUser): void {
+		console.log(`user: `, user);
 		this.db.list(UserDbEnum.USER).push(new UserDto(user));
 	}
 
-	update(user: User) {
+	update(user: IUser) {
 		this.db.list(UserDbEnum.USER).update(user.id, new UserDto(user));
 	}
 
-	getAll() {
-		this.db
+	getAll(): Observable<IUser[]> {
+		return this.db
 			.list(UserDbEnum.USER)
 			.snapshotChanges()
 			.pipe(

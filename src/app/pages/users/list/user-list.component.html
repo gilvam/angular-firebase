@@ -1,1 +1,32 @@
-<p>user-list works!</p>
+<mat-card>
+	<mat-card-content>
+		<h2>Usuários</h2>
+
+		<section>
+			<table mat-table [dataSource]="$users" matSort>
+				<caption></caption>
+
+				<ng-container matColumnDef="name">
+					<th mat-header-cell *matHeaderCellDef mat-sort-header>name</th>
+					<td mat-cell *matCellDef="let item">{{ item.name }}</td>
+				</ng-container>
+
+				<ng-container matColumnDef="email">
+					<th mat-header-cell *matHeaderCellDef mat-sort-header>email</th>
+					<td mat-cell *matCellDef="let item">{{ item.email }}</td>
+				</ng-container>
+
+				<ng-container matColumnDef="action">
+					<th mat-header-cell *matHeaderCellDef mat-sort-header>actions</th>
+					<td mat-cell *matCellDef="let item">
+						<a [routerLink]="['/users/edit']" mat-raised-button>edit</a>
+						<a [routerLink]="['/users/delete']" mat-raised-button color="warn">delete</a>
+					</td>
+				</ng-container>
+
+				<tr mat-header-row *matHeaderRowDef="nameColumns; sticky: true"></tr>
+				<tr mat-row *matRowDef="let row; columns: nameColumns"></tr>
+			</table>
+		</section>
+	</mat-card-content>
+</mat-card>
