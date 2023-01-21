@@ -12,18 +12,18 @@ import { BehaviorSubject, tap } from 'rxjs';
 export class AppComponent implements OnInit {
 	@ViewChild('sidenav', { static: false }) sidenav?: ElementRef<MatSidenav>;
 	@ViewChild(MatSidenavContainer) sidenavContainer?: MatSidenavContainer;
-	$isMobileOrTablet = new BehaviorSubject<boolean>(false);
+	$isLarge = new BehaviorSubject<boolean>(false);
 
 	constructor(private media: MediaMatcher, private mediaQueryService: MediaQueryService) {}
 
 	ngOnInit(): void {
 		this.mediaQueryService.onchange
-			?.pipe(tap(() => this.$isMobileOrTablet.next(this.mediaQueryService.isMobileOrTablet)))
+			?.pipe(tap(() => this.$isLarge.next(this.mediaQueryService.isLarge)))
 			.subscribe();
 	}
 
 	sideNavToggleMobile(): void {
-		if (!this.$isMobileOrTablet.value) {
+		if (this.$isLarge.value) {
 			return;
 		}
 		this.sideNavToggle();
@@ -34,6 +34,6 @@ export class AppComponent implements OnInit {
 	}
 
 	get navMode(): MatDrawerMode {
-		return this.$isMobileOrTablet.value ? 'over' : 'side';
+		return this.$isLarge.value ? 'side' : 'over';
 	}
 }

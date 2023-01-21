@@ -39,7 +39,7 @@
 </mat-toolbar>
 
 <mat-sidenav-container>
-	<mat-sidenav [opened]="!($isMobileOrTablet | async)" [mode]="navMode" fixedTopGap="56">
+	<mat-sidenav [opened]="$isLarge | async" [mode]="navMode" fixedTopGap="56">
 		<mat-nav-list (click)="sideNavToggleMobile()">
 			<a mat-list-item [routerLink]="['/users']" routerLinkActive="active">
 				<mat-icon matListItemIcon>group</mat-icon>

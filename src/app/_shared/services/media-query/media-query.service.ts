@@ -40,7 +40,11 @@ export class MediaQueryService {
 		return EnumUtil.getKey<MediaQueryEnum>(point as string, MediaQueryBreakpointEnum) || MediaQueryEnum.XS;
 	}
 
-	get isMobileOrTablet(): boolean {
+	get isSmall(): boolean {
 		return [MediaQueryEnum.XS, MediaQueryEnum.SM, MediaQueryEnum.MD].includes(this.getBreakpointsInfo());
+	}
+
+	get isLarge(): boolean {
+		return [MediaQueryEnum.LG, MediaQueryEnum.XL, MediaQueryEnum.XX].includes(this.getBreakpointsInfo());
 	}
 }
