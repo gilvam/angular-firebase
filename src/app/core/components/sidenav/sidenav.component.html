@@ -1,0 +1,19 @@
+<mat-sidenav-container>
+	<mat-sidenav [opened]="$isLarge | async" [mode]="navMode" fixedTopGap="56">
+		<mat-nav-list (click)="sideNavToggleMobile()">
+			<a
+				*ngFor="let nav of navList"
+				mat-list-item
+				[routerLink]="nav.route"
+				routerLinkActive="active"
+				[routerLinkActiveOptions]="{ exact: true }">
+				<mat-icon matListItemIcon>{{ nav.icon }}</mat-icon>
+				{{ nav.name }}
+			</a>
+		</mat-nav-list>
+	</mat-sidenav>
+
+	<mat-sidenav-content>
+		<ng-content />
+	</mat-sidenav-content>
+</mat-sidenav-container>
