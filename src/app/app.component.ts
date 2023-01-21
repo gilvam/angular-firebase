@@ -1,49 +1,29 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { MatDrawerMode, MatSidenav, MatSidenavContainer } from '@angular/material/sidenav';
-import { MediaQueryService } from './_shared/services/media-query.service';
+import { MediaQueryService } from './_shared/services/media-query/media-query.service';
+import { BehaviorSubject, tap } from 'rxjs';
 
 @Component({
 	selector: 'app-root',
 	templateUrl: './app.component.html',
 	styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements AfterViewInit, OnDestroy {
+export class AppComponent implements OnInit {
 	@ViewChild('sidenav', { static: false }) sidenav?: ElementRef<MatSidenav>;
 	@ViewChild(MatSidenavContainer) sidenavContainer?: MatSidenavContainer;
-	private mobileQuery: MediaQueryList;
-	private mobileQueryListener: () => void;
+	$isMobileOrTablet = new BehaviorSubject<boolean>(false);
 
-	constructor(
-		private changeDetectorRef: ChangeDetectorRef,
-		private media: MediaMatcher,
-		private mediaQueryService: MediaQueryService
-	) {
-		this.mobileQuery = this.media.matchMedia('(max-width: 1000px)');
-		this.mobileQueryListener = () => changeDetectorRef.detectChanges();
-		this.mobileQuery.addListener(this.mobileQueryListener);
-	}
+	constructor(private media: MediaMatcher, private mediaQueryService: MediaQueryService) {}
 
-	ngAfterViewInit(): void {
-		this.changeDetectorRef.detectChanges();
-
-		this.mediaQueryService.breakpointState?.subscribe(response => {
-			// console.log(`response: `, response);
-			console.log(`point: `, this.mediaQueryService.getBreakpointsInfo());
-			// this.mediaQueryService.getBreakpointsInfo().forEach(response => {
-			// 	console.log(`response: `, response);
-			// });
-
-			// this.mediaQueryService.getBreakpointsInfo();
-		});
-	}
-
-	ngOnDestroy(): void {
-		this.mobileQuery.removeListener(this.mobileQueryListener);
+	ngOnInit(): void {
+		this.mediaQueryService.onchange
+			?.pipe(tap(() => this.$isMobileOrTablet.next(this.mediaQueryService.isMobileOrTablet)))
+			.subscribe();
 	}
 
 	sideNavToggleMobile(): void {
-		if (!this.isMobile) {
+		if (!this.$isMobileOrTablet.value) {
 			return;
 		}
 		this.sideNavToggle();
@@ -53,15 +33,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 		this.sidenavContainer?.start?.toggle();
 	}
 
-	get navOpen(): boolean {
-		return !this.mobileQuery.matches;
-	}
-
 	get navMode(): MatDrawerMode {
-		return this.mobileQuery.matches ? 'over' : 'side';
-	}
-
-	get isMobile(): boolean {
-		return this.mobileQuery.matches;
+		return this.$isMobileOrTablet.value ? 'over' : 'side';
 	}
 }
