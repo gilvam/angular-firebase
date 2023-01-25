@@ -4,16 +4,21 @@ import { User } from '../model/user.model';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
-	$user = new BehaviorSubject(new User());
 	private $_user = new BehaviorSubject(new User());
 
-	constructor() {}
-
 	change(user: User): void {
-		this.$user.next(user);
+		this.$_user.next(user);
 	}
 
-	get(): Observable<User> {
+	clear(): void {
+		this.change(new User());
+	}
+
+	getObservable(): Observable<User> {
 		return this.$_user.asObservable();
+	}
+
+	get get(): User {
+		return this.$_user.value;
 	}
 }
