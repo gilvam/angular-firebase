@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { IUser } from '../_shared/model/user.interface';
 import { UserService } from '../_shared/services/user.service';
 import { ApiUserService } from '../_shared/services/api/api-user.service';
@@ -8,11 +8,15 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { UserDialogEditComponent } from '../_shared/components/dialogs/edit/user-dialog-edit.component';
 import { UserDialogNewComponent } from '../_shared/components/dialogs/new/user-dialog-new.component';
+import { LoaderService } from '../../../core/components/loader/service/loader.service';
+import { initialize } from '../../../core/components/_shared/operator/initialize.operator';
+import { fadeOpacityAnimation } from '../../../core/components/_shared/animations/fade-opacity.animation';
 
 @Component({
 	selector: 'app-user-list',
 	templateUrl: './user-list.component.html',
 	styleUrls: ['./user-list.component.scss'],
+	animations: [fadeOpacityAnimation],
 })
 export class UserListComponent implements OnInit {
 	$userList = new Observable<IUser[]>();
@@ -22,11 +26,21 @@ export class UserListComponent implements OnInit {
 		public dialog: MatDialog,
 		private snackBar: MatSnackBar,
 		private userService: UserService,
-		private apiUserService: ApiUserService
+		private apiUserService: ApiUserService,
+		private loaderService: LoaderService
 	) {}
 
 	ngOnInit(): void {
-		this.$userList = this.apiUserService.getAll();
+		this.$userList = this.apiUserService.getAll().pipe(
+			initialize(() => {
+				console.log('loading INIT');
+				this.loaderService.start();
+			}),
+			tap(() => {
+				console.log('loading END');
+				this.loaderService.stop();
+			})
+		);
 	}
 
 	private msg(text: string): void {

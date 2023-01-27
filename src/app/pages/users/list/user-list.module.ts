@@ -9,12 +9,13 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { UserDialogNewModule } from '../_shared/components/dialogs/new/user-dialog-new.module';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
 	imports: [
 		CommonModule,
+		FormsModule,
 		UserListRoutingModule,
 		UserDialogEditModule,
 		UserDialogNewModule,
@@ -23,7 +24,6 @@ import { UserDialogNewModule } from '../_shared/components/dialogs/new/user-dial
 		MatSortModule,
 		MatIconModule,
 		MatButtonModule,
-		MatSnackBarModule,
 	],
 	declarations: [UserListComponent],
 })

@@ -10,6 +10,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { SidenavModule } from './core/components/sidenav/sidenav.module';
 import { ToolbarModule } from './core/components/toolbar/toolbar.module';
+import { LoaderModule } from './core/components/loader/loader.module';
 
 @NgModule({
 	declarations: [AppComponent],
@@ -21,6 +22,7 @@ import { ToolbarModule } from './core/components/toolbar/toolbar.module';
 		AngularFireDatabaseModule,
 		SidenavModule,
 		ToolbarModule,
+		LoaderModule,
 	],
 	providers: [
 		{
