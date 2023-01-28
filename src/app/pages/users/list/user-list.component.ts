@@ -32,14 +32,8 @@ export class UserListComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.$userList = this.apiUserService.getAll().pipe(
-			initialize(() => {
-				console.log('loading INIT');
-				this.loaderService.start();
-			}),
-			tap(() => {
-				console.log('loading END');
-				this.loaderService.stop();
-			})
+			initialize(() => this.loaderService.start()),
+			tap(() => this.loaderService.stop())
 		);
 	}
 

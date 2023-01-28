@@ -26,10 +26,7 @@ export class LoaderService {
 	}
 
 	stop(): void {
-		timer(this.timerLoader).subscribe(() => {
-			this.request.next(!!this.remove);
-			console.log(`!!--this.count: `, this.count);
-		});
+		timer(this.timerLoader).subscribe(() => this.request.next(!!this.remove));
 	}
 
 	get onShow(): Observable<boolean> {
