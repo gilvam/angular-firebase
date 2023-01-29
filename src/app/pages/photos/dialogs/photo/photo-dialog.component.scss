@@ -1,0 +1,46 @@
+:host {
+	mat-dialog-content {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 100vw;
+		height: 100vh;
+		max-height: 100vh;
+
+		button {
+			z-index: 1;
+
+			&[mat-raised-button] {
+				position: absolute;
+				top: 10px;
+				right: 102px;
+
+				&[mat-dialog-close] {
+					top: 10px;
+					right: 10px;
+				}
+			}
+		}
+	}
+
+	mat-dialog-actions {
+		display: flex;
+		justify-content: flex-end;
+		flex-wrap: wrap;
+		flex-direction: row;
+		align-items: center;
+		position: fixed;
+		background: rgba(0, 0, 0, 0.4);
+		bottom: 0;
+		padding: 16px 20px;
+		width: 100%;
+	}
+}
+
+.show {
+	display: block;
+}
+
+.hide {
+	display: none;
+}

@@ -5,12 +5,13 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { A11yModule } from '@angular/cdk/a11y';
 import { DimensionCanvasDirective } from '../../directives/dimension-canvas.directive';
-import { LoaderModule } from '../../../loader/loader.module';
+import { LoaderModule } from '../../../../core/components/loader/loader.module';
 import { DimensionVideoDirective } from '../../directives/dimension-video.directive';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
 	declarations: [PhotoDialogComponent, DimensionCanvasDirective, DimensionVideoDirective],
-	imports: [CommonModule, MatDialogModule, MatButtonModule, A11yModule, LoaderModule],
+	imports: [CommonModule, A11yModule, MatDialogModule, MatButtonModule, MatIconModule, LoaderModule],
 	exports: [PhotoDialogComponent],
 })
 export class PhotoDialogModule {}

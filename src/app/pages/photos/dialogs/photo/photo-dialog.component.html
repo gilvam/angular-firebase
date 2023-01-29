@@ -1,0 +1,31 @@
+<mat-dialog-content>
+	<app-loader />
+
+	<ng-container *ngIf="!isLoaded">
+		<button mat-raised-button (click)="load()">Start</button>
+	</ng-container>
+	<ng-container *ngIf="isLoaded">
+		<button mat-raised-button color="warn" (click)="stop()">stop</button>
+	</ng-container>
+	<button mat-raised-button mat-dialog-close>cancel</button>
+
+	<video [class.show]="hasPhoto" autoplay playsinline [appDimensionVideo]="isLoaded" #video></video>
+	<img [class.hide]="!hasPhoto" aria-hidden="true" alt="" [appDimensionVideo]="isLoaded" #img />
+	<canvas [class.hide]="true" [appDimensionCanvas]="video" [isLoaded]="isLoaded" #canvas></canvas>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+	<ng-container *ngIf="!hasPhoto">
+		<button mat-raised-button color="accent" (click)="changeCamera()">change Camera</button>
+	</ng-container>
+
+	<ng-container *ngIf="!hasPhoto">
+		<button mat-raised-button color="primary" (click)="capture()">
+			<mat-icon>camera</mat-icon>
+			take
+		</button>
+	</ng-container>
+	<ng-container *ngIf="hasPhoto">
+		<button mat-raised-button color="primary" (click)="unCapture()">remove picture</button>
+	</ng-container>
+</mat-dialog-actions>

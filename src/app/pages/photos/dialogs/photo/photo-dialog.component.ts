@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { LoaderService } from '../../../loader/service/loader.service';
+import { LoaderService } from '../../../../core/components/loader/service/loader.service';
 import { finalize, from, timer } from 'rxjs';
-import { initialize } from '../../../_shared/operator/initialize.operator';
+import { initialize } from '../../../../core/components/_shared/operator/initialize.operator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
@@ -23,12 +23,7 @@ export class PhotoDialogComponent implements OnInit, OnDestroy, AfterViewInit {
 	ngOnInit(): void {}
 
 	ngAfterViewInit(): void {
-		timer(0).subscribe(() => {
-			this.load();
-			// this.imgRef.nativeElement.src = imgData;
-			// this.isLoaded = true;
-			// this.hasPhoto = true;
-		});
+		timer(0).subscribe(() => this.load());
 	}
 
 	ngOnDestroy(): void {
@@ -40,12 +35,8 @@ export class PhotoDialogComponent implements OnInit, OnDestroy, AfterViewInit {
 	}
 
 	private setMediaStreamAndPlay(mediaStream: MediaStream): void {
-		console.log(`mediaStream: `, mediaStream);
-		console.log(`mediaStream.getVideoTracks(): `, mediaStream.getVideoTracks());
 		this.videoRef.nativeElement.srcObject = mediaStream;
-		this.videoRef.nativeElement.play().then(() => {
-			this.isLoaded = true;
-		});
+		this.videoRef.nativeElement.play().then(() => (this.isLoaded = true));
 	}
 
 	async load(constraints?: MediaStreamConstraints | null): Promise<any> {
@@ -58,8 +49,6 @@ export class PhotoDialogComponent implements OnInit, OnDestroy, AfterViewInit {
 			.enumerateDevices()
 			.then(devices => devices.filter(device => device.kind === 'videoinput').map(device => device.deviceId));
 
-		console.log(`this.deviceIdList: `, this.deviceIdList);
-
 		from(navigator.mediaDevices.getUserMedia(constraints || { video: true }))
 			.pipe(
 				initialize(() => this.loaderService.start()),
@@ -68,26 +57,12 @@ export class PhotoDialogComponent implements OnInit, OnDestroy, AfterViewInit {
 			.subscribe(
 				(ms: MediaStream) => this.setMediaStreamAndPlay(ms),
 				error => {
+					if (String(error).toLowerCase().includes('permission')) {
+						this.snackBar.open('camera permission denied', '', { duration: 2000 });
+					}
 					console.error('ERROR => ', error);
 				}
 			);
-
-		// mediaDevice.getVideoTracks()[
-
-		// navigator.mediaDevices
-		// 	.getUserMedia({
-		// 		// video: { facingMode: this.constraints },
-		// 		video: true,
-		// 	})
-		// 	.then(display => {
-		// 		const videos = display.getVideoTracks();
-		// 		console.log(`videos: `, videos);
-		// 		console.log(`settings: `, videos[0].getSettings());
-		//
-		// 		display.getVideoTracks().forEach(track => {
-		// 			console.log(`track: `, track);
-		// 		});
-		// 	});
 	}
 
 	stop(): void {

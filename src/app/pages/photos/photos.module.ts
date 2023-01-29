@@ -5,10 +5,18 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
 import { PhotoDialogModule } from './dialogs/photo/photo-dialog.module';
+import { PhotosRoutingModule } from './photos-routing.module';
 
 @NgModule({
 	declarations: [PhotoComponent],
 	exports: [PhotoComponent],
-	imports: [CommonModule, MatButtonModule, MatSnackBarModule, MatDialogModule, PhotoDialogModule],
+	imports: [
+		CommonModule,
+		PhotosRoutingModule,
+		MatButtonModule,
+		MatSnackBarModule,
+		MatDialogModule,
+		PhotoDialogModule,
+	],
 })
 export class PhotoModule {}

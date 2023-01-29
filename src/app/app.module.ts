@@ -11,7 +11,6 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { SidenavModule } from './core/components/sidenav/sidenav.module';
 import { ToolbarModule } from './core/components/toolbar/toolbar.module';
 import { LoaderModule } from './core/components/loader/loader.module';
-import { PhotoModule } from './core/components/photo/photo.module';
 
 @NgModule({
 	declarations: [AppComponent],
@@ -24,7 +23,6 @@ import { PhotoModule } from './core/components/photo/photo.module';
 		SidenavModule,
 		ToolbarModule,
 		LoaderModule,
-		PhotoModule,
 	],
 	providers: [
 		{
