@@ -1,7 +1,8 @@
-import { AfterViewInit, Component, ElementRef, Inject, OnDestroy, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { LoaderService } from '../../../loader/service/loader.service';
 import { finalize, from, timer } from 'rxjs';
 import { initialize } from '../../../_shared/operator/initialize.operator';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
 	selector: 'app-photo-dialog',
@@ -12,10 +13,12 @@ export class PhotoDialogComponent implements OnInit, OnDestroy, AfterViewInit {
 	@ViewChild('video', { static: true }) videoRef = new ElementRef<HTMLVideoElement>({} as HTMLVideoElement);
 	@ViewChild('canvas', { static: true }) canvasRef = new ElementRef<HTMLCanvasElement>({} as HTMLCanvasElement);
 	@ViewChild('img', { static: true }) imgRef = new ElementRef<HTMLImageElement>({} as HTMLImageElement);
+	deviceIdList: string[] = [];
+	deviceIdIndex = 1;
 	hasPhoto = false;
 	isLoaded = false;
 
-	constructor(@Inject(PLATFORM_ID) private platform: string, private loaderService: LoaderService) {}
+	constructor(private snackBar: MatSnackBar, private loaderService: LoaderService) {}
 
 	ngOnInit(): void {}
 
@@ -45,28 +48,46 @@ export class PhotoDialogComponent implements OnInit, OnDestroy, AfterViewInit {
 		});
 	}
 
-	load(): void {
+	async load(constraints?: MediaStreamConstraints | null): Promise<any> {
 		if (!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)) {
-			console.error('NO camera');
+			this.snackBar.open('câmera não encontrada', '', { duration: 2000 });
 			return;
 		}
 
-		const mediaDevice = from(
-			navigator.mediaDevices.getUserMedia({
-				video: { facingMode: 'environment' },
-			})
-		).pipe(
-			initialize(() => this.loaderService.start()),
-			finalize(() => this.loaderService.stop())
-		);
-		mediaDevice.subscribe((ms: MediaStream) => this.setMediaStreamAndPlay(ms));
+		this.deviceIdList = await navigator.mediaDevices
+			.enumerateDevices()
+			.then(devices => devices.filter(device => device.kind === 'videoinput').map(device => device.deviceId));
 
-		const mediaDeviceSelect = from(navigator.mediaDevices.enumerateDevices());
-		mediaDeviceSelect.subscribe((response: InputDeviceInfo[]) => {
-			console.log(`response: `, response);
-		});
+		console.log(`this.deviceIdList: `, this.deviceIdList);
 
-		// navigator.mediaDevices.getDisplayMedia()
+		from(navigator.mediaDevices.getUserMedia(constraints || { video: true }))
+			.pipe(
+				initialize(() => this.loaderService.start()),
+				finalize(() => this.loaderService.stop())
+			)
+			.subscribe(
+				(ms: MediaStream) => this.setMediaStreamAndPlay(ms),
+				error => {
+					console.error('ERROR => ', error);
+				}
+			);
+
+		// mediaDevice.getVideoTracks()[
+
+		// navigator.mediaDevices
+		// 	.getUserMedia({
+		// 		// video: { facingMode: this.constraints },
+		// 		video: true,
+		// 	})
+		// 	.then(display => {
+		// 		const videos = display.getVideoTracks();
+		// 		console.log(`videos: `, videos);
+		// 		console.log(`settings: `, videos[0].getSettings());
+		//
+		// 		display.getVideoTracks().forEach(track => {
+		// 			console.log(`track: `, track);
+		// 		});
+		// 	});
 	}
 
 	stop(): void {
@@ -79,13 +100,23 @@ export class PhotoDialogComponent implements OnInit, OnDestroy, AfterViewInit {
 		this.isLoaded = false;
 	}
 
-	changeCamera(): void {}
+	changeCamera(): void {
+		if (this.deviceIdList.length <= this.deviceIdIndex) {
+			this.deviceIdIndex = 0;
+			this.changeCamera();
+			return;
+		}
+
+		const constraints: MediaStreamConstraints | null = {
+			video: { deviceId: this.deviceIdList[this.deviceIdIndex++] },
+		};
+		this.load(constraints);
+	}
 
 	private drawImageToCanvas(image: CanvasImageSource): void {
-		console.log(`image: `, [image]);
-		const { clientWidth, clientHeight, width, height } = this.videoRef.nativeElement;
-		console.log(`dimension: `, { clientWidth, clientHeight, width, height });
-		this.canvasRef.nativeElement.getContext('2d')?.drawImage(image, 0, 0, width, height);
+		this.canvasRef.nativeElement
+			.getContext('2d')
+			?.drawImage(image, 0, 0, this.videoRef.nativeElement.width, this.videoRef.nativeElement.height);
 	}
 
 	capture(): void {
