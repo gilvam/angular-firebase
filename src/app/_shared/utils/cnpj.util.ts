@@ -2,12 +2,7 @@ import { RegexUtil } from './regex.util';
 
 export class CnpjUtil {
   private static get blackList(): string[] {
-    const numList =
-      Array(10)
-        .fill(0)
-        .map((_, i) => i) || [];
-
-    return numList.map((num) => Array(14).fill(num).join(''));
+    return Array.from({ length: 10 }, (_, index) => String(index).repeat(14))
   }
 
   static format(number: string) {
