@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { BreakpointObserver, BreakpointState, MediaMatcher } from '@angular/cdk/layout';
 import { MediaQueryEnum } from './model/media-query.enum';
 import { MediaQueryBreakpointEnum } from './model/media-query-breakpoint.enum';
-import { EnumUtil } from '../../utils/enum.util';
-import { NumberUtil } from '../../utils/number.util';
-import { MediaQueryMax } from './model/media-query-max.model';
+import { MediaQuery } from './model/media-query.model';
+import { MediaQueryUnit } from './model/media-query-unit.model';
 
 @Injectable({ providedIn: 'root' })
 export class MediaQueryService {
-	onchange: Observable<BreakpointState>;
+	onchange: Observable<MediaQuery>;
+	mediaQuery = new MediaQuery();
 
-	list = [
+	private mediaQueryBreakpointList = [
 		MediaQueryBreakpointEnum.XS,
 		MediaQueryBreakpointEnum.SM,
 		MediaQueryBreakpointEnum.MD,
@@ -20,31 +20,27 @@ export class MediaQueryService {
 		MediaQueryBreakpointEnum.XX,
 	];
 
-	constructor(public breakpointObserver: BreakpointObserver, private mediaMatcher: MediaMatcher) {
-		this.onchange = this.breakpointObserver.observe(this.list);
+	constructor(private breakpointObserver: BreakpointObserver, private mediaMatcher: MediaMatcher) {
+		this.onchange = this.breakpointObserver.observe(this.mediaQueryBreakpointList)
+			.pipe(map((breakpointState) => this.createMediaQuery(breakpointState)));
 	}
 
-	private maxValue(mediaQuery: MediaQueryBreakpointEnum, accumulator: MediaQueryMax): MediaQueryMax {
-		const max = NumberUtil.onlyNumber(mediaQuery);
-		return max > accumulator.max ? new MediaQueryMax(mediaQuery, max) : accumulator;
-	}
-
-	getBreakpointsInfo(): MediaQueryEnum {
-		const point = this.list
-			.filter(breakpoint => this.mediaMatcher.matchMedia(breakpoint).matches)
-			.reduce(
-				(accumulator: MediaQueryMax, current) => this.maxValue(current, accumulator),
-				new MediaQueryMax()
-			).value;
-
-		return EnumUtil.getKey<MediaQueryEnum>(point as string, MediaQueryBreakpointEnum) || MediaQueryEnum.XS;
+	private createMediaQuery(breakpointState: BreakpointState): MediaQuery {
+		// this.mediaQueryBreakpointList.filter(breakpoint => this.mediaMatcher.matchMedia(breakpoint).matches)
+		const list = Object.entries(breakpointState.breakpoints).map(
+			([key, value]) => new MediaQueryUnit(key as MediaQueryBreakpointEnum, value));
+		const indexMin = list.findIndex((it) => it.hasMatch);
+		const indexMax = list.reduceRight((previousValue, mediaQueryUnit, index) => {
+			return previousValue === -1 && mediaQueryUnit.hasMatch ? index : previousValue;
+		}, -1);
+		return (this.mediaQuery = new MediaQuery(list, indexMin, indexMax));
 	}
 
 	get isSmall(): boolean {
-		return [MediaQueryEnum.XS, MediaQueryEnum.SM, MediaQueryEnum.MD].includes(this.getBreakpointsInfo());
+		return this.mediaQuery.containsMediaQuery(MediaQueryEnum.XS, MediaQueryEnum.SM, MediaQueryEnum.MD);
 	}
 
 	get isLarge(): boolean {
-		return [MediaQueryEnum.LG, MediaQueryEnum.XL, MediaQueryEnum.XX].includes(this.getBreakpointsInfo());
+		return this.mediaQuery.containsMediaQuery(MediaQueryEnum.LG, MediaQueryEnum.XL, MediaQueryEnum.XX);
 	}
 }

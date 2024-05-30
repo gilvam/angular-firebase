@@ -18,9 +18,10 @@ export class SidenavComponent implements OnInit, AfterViewInit {
 	constructor(private sidenavService: SidenavService, private mediaQueryService: MediaQueryService) {}
 
 	ngOnInit(): void {
-		this.mediaQueryService.onchange
-			?.pipe(tap(() => this.$isLarge.next(this.mediaQueryService.isLarge)))
-			.subscribe();
+		this.mediaQueryService.onchange.pipe(tap(() => this.$isLarge.next(this.mediaQueryService.isLarge)))
+			.subscribe(it => {
+				console.log(`it: `, it);
+			});
 	}
 
 	ngAfterViewInit(): void {
